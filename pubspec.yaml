@@ -1,0 +1,70 @@
+name: ecommerce_template
+description: "Template completo de e-commerce desenvolvido em Flutter com Clean Architecture. Pronto para produção e fácil de personalizar."
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.8.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # UI Components
+  cupertino_icons: ^1.0.8
+
+  # State Management
+  flutter_bloc: ^9.1.1
+  equatable: ^2.0.7
+
+  # Functional Programming
+  dartz: ^0.10.1
+
+  # Networking & HTTP
+  dio: ^5.9.0
+
+  # Local Storage & Cache
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  shared_preferences: ^2.5.3
+
+  # Image Handling
+  cached_network_image: ^3.4.1
+
+  # Navigation
+  go_router: ^16.2.0
+
+  # Firebase (Optional)
+  firebase_core: ^4.0.0
+  firebase_auth: ^6.0.1
+  cloud_firestore: ^6.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  # Linting & Code Quality
+  flutter_lints: ^5.0.0
+
+  # Code Generation
+  hive_generator: ^2.0.1
+  build_runner: ^2.5.4
+  json_annotation: ^4.9.0
+  json_serializable: ^6.9.0
+
+flutter:
+  uses-material-design: true
+
+  # Assets
+  # assets:
+  #   - assets/images/
+  #   - assets/icons/
+
+  # Fonts
+  # fonts:
+  #   - family: CustomFont
+  #     fonts:
+  #       - asset: assets/fonts/CustomFont-Regular.ttf
+  #       - asset: assets/fonts/CustomFont-Bold.ttf
+  #         weight: 700
