@@ -288,4 +288,4 @@ Se você encontrar algum problema ou tiver dúvidas:
 
 ---
 
-**Desenvolvido com ❤️ usando Flutter**
+**Desenvolvido por Cauã usando Flutter**
