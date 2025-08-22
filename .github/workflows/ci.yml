@@ -1,0 +1,139 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  analyze:
+    name: 🔍 Analyze Code
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📚 Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: 🐦 Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.8.1'
+        channel: 'stable'
+        
+    - name: 📦 Get dependencies
+      run: flutter pub get
+      
+    - name: 🔍 Analyze code
+      run: flutter analyze
+      
+    - name: 📏 Check formatting
+      run: dart format --set-exit-if-changed .
+
+  test:
+    name: 🧪 Run Tests
+    runs-on: ubuntu-latest
+    needs: analyze
+    
+    steps:
+    - name: 📚 Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: 🐦 Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.8.1'
+        channel: 'stable'
+        
+    - name: 📦 Get dependencies
+      run: flutter pub get
+      
+    - name: 🧪 Run tests
+      run: flutter test --coverage
+      
+    - name: 📊 Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: coverage/lcov.info
+
+  build-android:
+    name: 🤖 Build Android
+    runs-on: ubuntu-latest
+    needs: [analyze, test]
+    
+    steps:
+    - name: 📚 Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: 🐦 Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.8.1'
+        channel: 'stable'
+        
+    - name: ☕ Setup Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'zulu'
+        java-version: '17'
+        
+    - name: 📦 Get dependencies
+      run: flutter pub get
+      
+    - name: 🔨 Build APK
+      run: flutter build apk --release
+      
+    - name: 📤 Upload APK artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: android-apk
+        path: build/app/outputs/flutter-apk/app-release.apk
+
+  build-web:
+    name: 🌐 Build Web
+    runs-on: ubuntu-latest
+    needs: [analyze, test]
+    
+    steps:
+    - name: 📚 Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: 🐦 Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.8.1'
+        channel: 'stable'
+        
+    - name: 📦 Get dependencies
+      run: flutter pub get
+      
+    - name: 🔨 Build Web
+      run: flutter build web --release
+      
+    - name: 📤 Upload Web artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: web-build
+        path: build/web/
+
+  deploy-web:
+    name: 🚀 Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    needs: build-web
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: 📚 Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: 📥 Download Web artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: web-build
+        path: build/web/
+        
+    - name: 🚀 Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: build/web/
